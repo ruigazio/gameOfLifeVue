@@ -34,12 +34,14 @@ module.exports = {
   },
   module: {
     preLoaders: [
+      /*
       {
         test: /\.vue$/,
         loader: 'eslint',
         include: projectRoot,
         exclude: /node_modules/
       },
+      */
       {
         test: /\.js$/,
         loader: 'eslint',
@@ -58,6 +60,9 @@ module.exports = {
         include: projectRoot,
         exclude: /node_modules/
       },
+			{ test: /\.coffee$/,
+			  loader: 'coffee-loader'
+			},
       {
         test: /\.json$/,
         loader: 'json'
