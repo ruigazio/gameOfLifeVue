@@ -1,6 +1,10 @@
 <template>
-<div class="narrow-column">
+<div>
+	<div class="wide-column grid">
+		<grid v-on:cellClick="cellAction" :cells="life.grid.cells" :showNeighbors="showNeighbors"></grid>
+	</div>
 
+	<div class="narrow-column">
 	<div class="row form-group">
 		<h3>Pattern</h3>
 		<button @click="setRandom">random</button>
@@ -57,7 +61,9 @@
 </template>
 
 <script lang="coffee">
+
 Examples = require '../model/examples.coffee'
+Grid = require './Grid'
 
 module.exports  =
 	name: 'controls'
@@ -68,8 +74,13 @@ module.exports  =
 		showNeighbors: false
 		Examples: Examples
 	props: ['life']
+
+	components:
+		Grid: Grid
+  
 	methods:
 		noop: ->
+
 		interrupt: (action) ->
 			@stop()
 			action()
@@ -87,7 +98,6 @@ module.exports  =
 				@cellClickCheck()
 				@tick()
 
-
 		stepForward: ->
 			@cellClickCheck()
 			@interrupt @life.stepForward.bind @life
@@ -100,10 +110,11 @@ module.exports  =
 			@cellClickCheck()
 			@interrupt @life.stepBack.bind @life
 
-		cellAction: (rCell) ->
+		cellAction: (mCell) ->
+			console.log mCell
 			@stop()
 			@cellClicked = true
-			rCell.cell.invertState()
+			mCell.invertState()
 			@life.resetPreStep()
 
 		cellClickCheck: ->

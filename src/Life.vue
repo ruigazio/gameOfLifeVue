@@ -1,12 +1,10 @@
 <template>
   <div id="app">
-		<grid :cells="life.grid.cells"></grid>
 		<controls :life="life" />
   </div>
 </template>
 
 <script>
-import Grid from './components/Grid'
 
 import LifeM from './model/life.coffee'
 import GridM from './model/grid.coffee'
@@ -25,10 +23,10 @@ export default {
 	},
 	props: ["x","y"],
   components: {
-		Grid,
 		Controls
   }
 }
+
 </script>
 
 <style>
