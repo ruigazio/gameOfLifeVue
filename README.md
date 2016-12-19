@@ -1,4 +1,4 @@
-# gameoflife
+# gameOfLifeVue
 
 > Game of life implemented in Vue.js
 
