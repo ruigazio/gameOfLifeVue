@@ -1,11 +1,22 @@
 <template>
 <div>
-	<div class="wide-column grid">
-		<grid v-on:cellClick="cellAction" :cells="life.grid.cells" :showNeighbors="showNeighbors"></grid>
+	<div class="wide-column">
+		<grid 
+			@cellClick="cellAction"
+			:cells="life.grid.cells"
+			:showNeighbors="showNeighbors"
+			:cellStyle="cellStyle"
+			:rowStyle="rowStyle">
+		</grid>
 	</div>
 
 	<div class="narrow-column">
-	<div class="row form-group">
+
+	<div class="form-group">
+		<clock :clock="clock"></clock>
+	</div>
+
+	<div class="form-group">
 		<h3>Pattern</h3>
 		<button @click="setRandom">random</button>
 		<button @click="setBlank">blank</button>
@@ -13,7 +24,7 @@
 		<button @click="setPulsar">Pulsar</button>
 	</div>
 
-	<div class="row form-group">
+	<div class="form-group">
 		<h3>Evolution</h3>
 		<p id="tickNo" class="info">#{{life.numTicks}}</p>
 		<button id="backBtn" @click="stepBack">
@@ -24,7 +35,7 @@
 		</button>
 		<button id="forwardBtn" @click="stepForward"> &gt; </button>
 	</div>
-	<div class="row form-group">
+	<div class="form-group">
 		<h3>Speed</h3>
 		<p>
 			<input v-model.lazy.number="delay"
@@ -33,17 +44,17 @@
 		</p>
 	</div>
 
-	<div class="row form-group">
+	<div class="form-group">
 		<h3>Size</h3>
 		<p>
-			<button @click="noop">-</button>
+			<button @click="life.grid.delRow()">-</button>
 			<span id="noRows">{{life.grid.y}}</span> Rows
-			<button @click="noop">+</button>
+			<button @click="life.grid.addRow()">+</button>
 		</p>
 		<p>
-			<button @click="noop">-</button>
+			<button @click="life.grid.delCol()">-</button>
 			<span id="noCols">{{life.grid.x}}</span> Columns
-			<button @click="noop">+</button>
+			<button @click="life.grid.addCol()">+</button>
 		</p>
 		<p>
 			Cell size <input v-model.lazy.number="cellSize"
@@ -51,7 +62,7 @@
 		</p>
 	</div>
 
-	<div class="row form-group">
+	<div class="form-group">
 		<input v-model="showNeighbors"
 			id="showNeighbors" type="checkbox"/>
 		Display number of neighbours
@@ -64,19 +75,35 @@
 
 Examples = require '../model/examples.coffee'
 Grid = require './Grid'
+Clock = require './Clock'
+ClockM = require '../model/clock.coffee'
 
 module.exports  =
 	name: 'controls'
+
 	data: () ->
 		timer: null
+		clock: new ClockM 50
 		delay: 1
 		cellSize: 12
 		showNeighbors: false
 		Examples: Examples
+
 	props: ['life']
+
+	computed:
+		cellSizePx: ->
+			"#{this.cellSize}px"
+		cellStyle: ->
+			width: this.cellSizePx
+			height: this.cellSizePx
+			fontSize: "#{this.cellSize * 0.6}pt"
+		rowStyle: ->
+			height: this.cellSizePx
 
 	components:
 		Grid: Grid
+		Clock: Clock
   
 	methods:
 		noop: ->
@@ -88,7 +115,7 @@ module.exports  =
 		stop: ->
 			if @timer
 				clearTimeout @timer
-				this.$nextTick @noop
+				setTimeout @clock.stop.bind @clock
 				@timer = null
 			else
 				true
@@ -96,6 +123,7 @@ module.exports  =
 		startStop: ->
 			if @stop()
 				@cellClickCheck()
+				@clock.start()
 				@tick()
 
 		stepForward: ->
@@ -104,6 +132,7 @@ module.exports  =
 
 		tick: ->
 			@life.stepForward()
+			@clock.mark()
 			@timer = setTimeout (this.$nextTick.bind this, @tick), @delay
 
 		stepBack: ->
@@ -111,7 +140,6 @@ module.exports  =
 			@interrupt @life.stepBack.bind @life
 
 		cellAction: (mCell) ->
-			console.log mCell
 			@stop()
 			@cellClicked = true
 			mCell.invertState()
@@ -134,6 +162,69 @@ module.exports  =
 		setRandom: -> @lifeAction @life.setRandom
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
+@media (min-width: 850px){
+	.wide-column {
+		width: 70%;
+		float: left;
+		text-align: center;
+	}
+
+	.narrow-column {
+		width: 30%;
+		float: left;
+		text-align: center;
+	}
+}
+
+@media (max-width: 849px){
+	.wide-column {
+		text-align: center;
+	}
+	.narrow-column {
+		text-align: center;
+	}
+}
+
+.info {
+	color: silver;
+}
+
+.hint {
+	font-style: italic;
+}
+
+.form-group p {
+	margin: 0.5em auto;
+}
+
+.form-group {
+	border: 1px solid silver;
+	margin: 0.5em auto;
+	padding: 0.5em;
+	max-width: 22em;
+}
+
+.cell {
+	display: inline-block;
+	cursor: default;
+	border: 1px solid;
+}
+
+h3 {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+button {
+	margin: 0.3em 0.1em;
+	font: inherit;
+	color: inherit;
+}
+
+input {
+	width: 5em;
+	color: black;
+}
+
 </style>

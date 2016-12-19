@@ -1,13 +1,15 @@
 <template>
-	<div>
+	<div class="grid">
 	<div class="row" 
 		v-for="(row, irow) in this.cells"
+		:style="rowStyle"
 		:key="'' + irow">
 
 		<div v-for="(cell,icell) in row"
 			class="cell" :class="cell.display.alive ? 'alive' : 'dead'"
 			@click="cellClick(cell)"
-			:key=" '' + irow + icell ">
+			:key=" '' + irow + icell "
+			:style="cellStyle">
 			{{showNeighbors ? cell.display.neighbors : '' }}
 		</div>
 	</div>
@@ -20,20 +22,14 @@ GridM = require '../model/grid.coffee'
 
 module.exports  =
 	name: 'grid'
-	props: ['cells', 'showNeighbors']
+	props: ['cells', 'showNeighbors', 'cellStyle', 'rowStyle']
 	methods:
 		cellClick: (cell) ->
 			this.$emit 'cellClick', cell
 
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.cell {
-	width: 12px;
-	height: 12px;
-}
-
+<style>
 .cell {
 	display: inline-block;
 	cursor: default;
@@ -49,6 +45,4 @@ module.exports  =
 	background-color: steelblue;
 }
 
-.row {
-}
 </style>

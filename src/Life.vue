@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+		<h3 class="title">Conway's Game Of Life (Vue)</h3>
 		<controls :life="life" />
   </div>
 </template>
@@ -30,6 +31,19 @@ export default {
 </script>
 
 <style>
+
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+h3.title {
+	margin-bottom: 1em;
+}
+
+body {
+	margin: 1em;
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -39,26 +53,4 @@ export default {
   margin-top: 60px;
 }
 
-@media (min-width: 850px){
-	.wide-column {
-		width: 70%;
-		float: left;
-		text-align: center;
-	}
-
-	.narrow-column {
-		width: 30%;
-		float: left;
-		text-align: center;
-	}
-}
-
-@media (max-width: 849px){
-	.wide-column {
-		text-align: center;
-	}
-	.narrow-column {
-		text-align: center;
-	}
-}
 </style>
